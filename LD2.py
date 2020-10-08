@@ -104,11 +104,29 @@ def tikslumas(n1, n2):
     return n1 - n2
 
 
+def x_mtip_compare(wt1, bt1, wt2, bt2):
+    xt_n = 20  # neurono iejimu kiekis
+    xtc = n_input(xt_n)
+    y_1 = [0] * len(wt1)
+    v_1 = [0] * len(wt1)
+    y = [0] * len(wt1)
+    n = 0
+
+    while n != len(wt1):
+        y_1[n] = y1_funkcija(wt1[n], bt1[n], xtc[n])
+        v_1[n] = n_aktyvimas(y_1[n])
+        y[n] = y_funkcija(v_1[n], wt2[n], bt2[n])
+        n += 1
+    #  print("cc", y)
+
+
 def mtip_backpropogation_test(bp_x1, bp_w1, bp_b1, bp_w2, bp_b2):
     y_1 = y1_funkcija(bp_w1, bp_b1, bp_x1)  # Issiunciame parametrus ir apskaiciuojame lygtis
     v_1 = n_aktyvimas(y_1)  # issiunciame lygties atsakymus i aktyvavimo funkcija
     y = y_funkcija(v_1, bp_w2, bp_b2)
     klaidu_tikrinimas(n_output(bp_x1), y)
+    x_mtip_compare(bp_w1, bp_b1, bp_w2, bp_b2)
+
     return y
 
 
@@ -150,7 +168,9 @@ def o_parametru_atnaujinimas(l_r, w2, b2, e, v1, y1, b1, w1, x_i, y):
         b1[n] = b1[n] + l_r * delta_1[n]
         n += 1
     n3 = mtip_backpropogation_test(x_i, w1, b1, w2, b2)
-    return n3
+    # x_mtip_compare(w1, b1, w2, b2)
+    # print(y_gen)
+    return n3  # , w1, b1, w2, b2
 
 
 def mlp_sukurimas(x1, hidden, rate):
@@ -167,8 +187,13 @@ def mlp_sukurimas(x1, hidden, rate):
     n2 = o_parametru_atnaujinimas(rate, w2_1, b2_1, e, v_1, y_1, b1_1, w1_1, x1, y)
     n3 = tikslumas(n1, n2)
     rez = 0
+    # wt_1 = [0] * len(w1_1)
+    # bt_1 = [0] * len(w1_1)
+    # wt_2 = [0] * len(w1_1)
+    # bt_2 = [0] * len(w1_1)
     while 0.1 < n3:
         n2 = o_parametru_atnaujinimas(rate, w2_1, b2_1, e, v_1, y_1, b1_1, w1_1, x1, y)
+        # wt_1, bt_1, wt_2, bt_2
         n3 = tikslumas(n1, n2)
         if n3 > 2:
             rez = 1
@@ -180,6 +205,8 @@ def mlp_sukurimas(x1, hidden, rate):
         print("n_output:", n1)
         print("backpropogation:", n2)
         print("Skirtumas", n3)
+        # y_gen = x_mtip_compare(wt_1, bt_1, wt_2, bt_2)
+        # print("generated", y_gen)
     return rez
 
 
@@ -190,6 +217,8 @@ x = n_input(x_n)
 n_target = 1  # X pavyzdzio pasirinkimas
 n_hidden = 4  # pasleptu neuronu kiekis
 l_rate = 0.3  # learning rate
+
 a = 1
 while a != 0:
     a = mlp_sukurimas(x[n_target], n_hidden, l_rate)
+

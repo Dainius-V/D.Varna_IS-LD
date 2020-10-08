@@ -92,73 +92,52 @@ def algoritmas():
     etotal = 1
     eta = 0
     xT = [1, 1, 1, 1, 1, 1, 1, 1, 1, -1, -1, -1, -1]  # Norimi atsakymai
-    xt_n = [1, 1, 1, -1, -1, -1]
-    x1_n = [0] * len(xt_n)
-    x2_n = [0] * len(xt_n)
-    i = 0
-    i_minus = 10
-    while i != len(xt_n):
-        if xt_n[i] == 1:
-            x1_n[i] = xx1[i]
-            x2_n[i] = xx2[i]
-            i += 1
-        else:
-            if xt_n[i] == -1:
-                x1_n[i] = xx1[i_minus]
-                x2_n[i] = xx2[i_minus]
-                i += 1
-                i_minus += 1
-    w1 = 0
-    w2 = 0
-    b = 0
-    v = [0] * len(xt_n)
-    y = [0] * len(xt_n)
-    e = [0] * len(xt_n)
+
+    v = [0] * len(xT)
+    y = [0] * len(xT)
+    e = [0] * len(xT)
     # Paleidziam kol klaidu suma (e) nera lygi 0
+
     while etotal != 0:
 
         m = 0
         n = 0
-        # random.uniform(-1,1)
-        # random.random()
-        # Ciklo pradzioje duodame pradinius kintamuosius
         w1 = random.uniform(-1, 1)
-        eta = 0.3
+        eta = random.uniform(0, 1)
         # 0 < eta < 1
         w2 = random.uniform(-1, 1)
         b = random.uniform(-1, 1)
-
         # Paleidziame cikla gauti norimus rezultatus pagal gautus parametrus
-        while m != len(xt_n):
-            print("y =", y)
-            if n == (len(xt_n)-1):
+        while m != 13:
+
+            if n == 12:
                 # Jeigu masyvo pozicija 12
-                if y[n] == xt_n[n]:
+                if y[n] == xT[n]:
                     # Jei masyvo 12 pozicija turi norima atsakyma
                     # sustabdo cikla
                     break
                 else:
                     # Jei ne atliekamas lygties paskaiciavimas, atsakymo patikrinimas ir klaidos paskaiciavimas
-                    v[n] = x1_n[n] * w1 + x2_n[n] * w2 + b
+                    v[n] = xx1[n] * w1 + xx2[n] * w2 + b
                     y[n] = atsakymo_tikrinimas(v[n])
-                    e[n] = klaidos_skaiciavimas(xt_n[n], y[n])
+                    e[n] = klaidos_skaiciavimas(xT[n], y[n])
                     # Stabdome cikla
                     break
             else:
                 # Jei masyvo pozicija ne 12
-                if y[n] == xt_n[n]:
+                if y[n] == xT[n]:
                     # Tikrina ar turimas lygties atsakymas tinka norimam rezultatui
-                    if y[n + 1] == xt_n[n + 1]:
+                    if y[n + 1] == xT[n + 1]:
                         # Jei taip, tikrina sekancio masyvo reiksme su norimu rezultatu
                         # Padidiname kintamuosius 1
                         n += 1
                         m += 1
                     else:
                         # Jei sekancio masyvo reiksme neturi tinkamo atsakymo atliekame parametru naujima
-                        w1 = w1 + eta * e[n] * x1_n[n]
-                        w2 = w2 + eta * e[n] * x2_n[n]
+                        w1 = w1 + eta * e[n] * xx1[n]
+                        w2 = w2 + eta * e[n] * xx2[n]
                         b = b + eta * e[n]
-                        if lygtis_t(x1_n[0], x2_n[0], w1, w2, b) != xt_n[0]:
+                        if lygtis_t(xx1[0], xx2[0], w1, w2, b) != xT[0]:
                             break
                         # Padidiname kintamuosius 1
                         n += 1
@@ -166,20 +145,20 @@ def algoritmas():
 
                 else:
                     # Jei turimas lygties neatitinka norimo rezultato atliekame skaiciavimus
-                    v[n] = x1_n[n] * w1 + x2_n[n] * w2 + b
+                    v[n] = xx1[n] * w1 + xx2[n] * w2 + b
                     y[n] = atsakymo_tikrinimas(v[n])
-                    e[n] = klaidos_skaiciavimas(xt_n[n], y[n])
+                    e[n] = klaidos_skaiciavimas(xT[n], y[n])
 
-                    if y[n + 1] == xt_n[n + 1]:
+                    if y[n + 1] == xT[n + 1]:
                         # Tikriname sekancio masyvo turima rezultata
                         n += 1
                         m += 1
                     else:
                         # Jei neatitinka norimo rezultato, atnaujiname parametrus
-                        w1 = w1 + eta * e[n] * x1_n[n]
-                        w2 = w2 + eta * e[n] * x2_n[n]
+                        w1 = w1 + eta * e[n] * xx1[n]
+                        w2 = w2 + eta * e[n] * xx2[n]
                         b = b + eta * e[n]
-                        if lygtis_t(x1_n[0], x2_n[0], w1, w2, b) != xt_n[0]:
+                        if lygtis_t(xx1[0], xx2[0], w1, w2, b) != xT[0]:
                             break
                         # Papildom kintamuosius
                         n += 1
@@ -187,21 +166,16 @@ def algoritmas():
         # Apskaiciavus visu masyvu veiksmus sudedame turimas klaidas
         # Jei etotal nelygi 0, kartojame cikla, jei lygi 0 stabdome
         etotal = sum(e)
+        print(y)
     # Gavus norima etotal isvedame parametrus su kuriais gavome atsakyma
     print("Done")
-    print("xt_n", xt_n)
-    print("y = ", y)
-    print("x1 =", x1_n)
-    print("x2 =", x2_n)
-    print("------")
-    print("w1 = ", w1)
-    print("w2 = ", w2)
-    print("b = ", b)
-    print("eta = ", eta)
-    # print("T = ", xT)
-    # print("y = ", xT)
-    print("e = ", e)
-    print("etotal = ", etotal)
+    print("w1", w1)
+    print("w2", w2)
+    print("b", b)
+    print("x1", xx1)
+    print("x2", xx2)
+    print("xT", xT)
+    print("y", y)
     output_patikrinimas(xx1, xx2, w1, w2, b)
 
 
