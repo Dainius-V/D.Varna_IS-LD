@@ -1,9 +1,10 @@
-# https://en.wikipedia.org/wiki/Naive_Bayes_classifier
+# IS laboratorinis darbas nr. 1. Dainius Varna EKSfm20 202000333
 # Pridedame bibliotekas random, numpy
 import random
 import numpy as np
 
 
+# Funkcija klasifikatoriaus funkcijos lygties paskaiciavimui
 def lygtis(a, c):  # Funkcijos lygtis a=x1, c=x2
     # Funkcija apskaiciuoti lygciai x1 * w1 + c * w2 + b
     w1 = random.uniform(-1, 1)
@@ -12,10 +13,12 @@ def lygtis(a, c):  # Funkcijos lygtis a=x1, c=x2
     return a * w1 + c * w2 + b
 
 
+# Funkcija lygties paskaiciavimui
 def lygtis_t(xt1, xt2, w1, w2, b):
     return atsakymo_tikrinimas(xt1*w1+xt2*w2+b)
 
 
+# Atsakymo patikrinimui skirta funkcija
 def atsakymo_tikrinimas(g):
     # Funkcija tikrinti lygties gauta rezultata
     y = 0
@@ -26,6 +29,7 @@ def atsakymo_tikrinimas(g):
     return y
 
 
+# Klaidos paskaiciavimui funkcija
 def klaidos_skaiciavimas(y, t):
     # Funkcija gauto klaidos paskaiciavimui su gautu ir norimu rezultatu
     e = t - y
@@ -83,6 +87,7 @@ def klasifikatorius():
     print("e = ", e)
 
 
+# Mokymo algortiamas
 def algoritmas():
     # Funkcija mokymo algortimui klasifikatoriaus parametrams apskaiciuoti
     print("Paleidziam algoritma")
@@ -92,7 +97,8 @@ def algoritmas():
     etotal = 1
     eta = 0
     xT = [1, 1, 1, 1, 1, 1, 1, 1, 1, -1, -1, -1, -1]  # Norimi atsakymai
-    xt_n = [1, 1, 1, -1, -1, -1]
+    xt_n = [1, 1, 1, 1, 1, 1, 1, 1, 1, -1, -1, -1, -1]  # Atsakymai pagal kuriuos mokysim
+    # Paruosiam x1 ir x2 pagal pasirinktus norimus atsakymus:
     x1_n = [0] * len(xt_n)
     x2_n = [0] * len(xt_n)
     i = 0
@@ -107,7 +113,11 @@ def algoritmas():
                 x1_n[i] = xx1[i_minus]
                 x2_n[i] = xx2[i_minus]
                 i += 1
-                i_minus += 1
+                if i_minus == 12:
+                    i_minus = 10
+                else:
+                    i_minus += 1
+    # Paruosiam reikiamus kintamuosius ir masyvus
     w1 = 0
     w2 = 0
     b = 0
@@ -119,8 +129,6 @@ def algoritmas():
 
         m = 0
         n = 0
-        # random.uniform(-1,1)
-        # random.random()
         # Ciklo pradzioje duodame pradinius kintamuosius
         w1 = random.uniform(-1, 1)
         eta = 0.3
@@ -158,7 +166,9 @@ def algoritmas():
                         w1 = w1 + eta * e[n] * x1_n[n]
                         w2 = w2 + eta * e[n] * x2_n[n]
                         b = b + eta * e[n]
+                        # Atnaujinus parametrus tikriname ar dar vis gauname norimus atsakymus
                         if lygtis_t(x1_n[0], x2_n[0], w1, w2, b) != xt_n[0]:
+                            print("break")
                             break
                         # Padidiname kintamuosius 1
                         n += 1
@@ -179,7 +189,9 @@ def algoritmas():
                         w1 = w1 + eta * e[n] * x1_n[n]
                         w2 = w2 + eta * e[n] * x2_n[n]
                         b = b + eta * e[n]
+                        # Atnaujinus parametrus tikriname ar dar vis gauname norimus atsakymus
                         if lygtis_t(x1_n[0], x2_n[0], w1, w2, b) != xt_n[0]:
+                            print("break")
                             break
                         # Papildom kintamuosius
                         n += 1
@@ -202,9 +214,10 @@ def algoritmas():
     # print("y = ", xT)
     print("e = ", e)
     print("etotal = ", etotal)
-    output_patikrinimas(xx1, xx2, w1, w2, b)
+    output_patikrinimas(xx1, xx2, w1, w2, b)  # Patikrinime norima rezultata su sukurtais w1, w2, b
 
 
+# Funkcija skirta rezultato tikrinimui su apskaiciuotais iverciais
 def output_patikrinimas(x1_n, x2_n, w1, w2, b):
     v = [0] * len(x1_n)
     y = [0] * len(x1_n)
